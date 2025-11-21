@@ -22,13 +22,18 @@ client = AsyncIOMotorClient(MONGOURL)
 db = client[DBNAME]
 
 app = FastAPI()
+
+# CONFIGURACIÓN CORS PARA PRODUCCIÓN (solo tu dominio Vercel)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://portfolio-q1f4.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# El resto de tu código permanece igual…
+# -------------------------------------
 
 class Asset(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
@@ -52,7 +57,6 @@ class AssetCreate(BaseModel):
     fecha_compra: str
     isin: Optional[str] = ""
 
-# Lista de tickers a tratar como americanos aunque no sean USD
 AMERICAN_EXTRAS = {"TARA"}
 
 def get_current_price_and_open(ticker: str, tipo: str, moneda: str):
