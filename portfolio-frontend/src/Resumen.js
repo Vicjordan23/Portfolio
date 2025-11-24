@@ -1,46 +1,61 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 
-/**
- * Componente que muestra un resumen de métricas clave de la cartera.
- * Cada métrica incluye una etiqueta, el valor numérico y un
- * indicador visual (flecha hacia arriba o hacia abajo) que señala si
- * el valor es positivo o negativo.
- */
 export default function Resumen({ metrics = [] }) {
-  const renderValue = (metric) => {
-    const val = parseFloat(metric.value) || 0;
-    const isPositive = val >= 0;
-    const arrow = isPositive ? "▲" : "▼";
-    const absVal = Math.abs(val);
-    const text = metric.isPercent
-      ? `${absVal.toFixed(2)} %`
-      : `${absVal.toFixed(2)} €`;
-    return (
-      <span className={isPositive ? "green" : "red"}>
-        {arrow} {text}
-      </span>
-    );
-  };
+  const prevValues = useRef({});
+  const [flashes, setFlashes] = useState({});
+
+  useEffect(() => {
+    metrics.forEach((m, i) => {
+      const old = prevValues.current[m.label];
+      const now = m.value;
+
+      if (old !== undefined && now !== old) {
+        const flashClass =
+          now > old ? "flash-green" : "flash-red";
+
+        setFlashes((f) => ({ ...f, [m.label]: flashClass }));
+
+        setTimeout(() => {
+          setFlashes((f) => {
+            const copy = { ...f };
+            delete copy[m.label];
+            return copy;
+          });
+        }, 3000);
+      }
+
+      prevValues.current[m.label] = now;
+    });
+  }, [metrics]);
+
   const borderClasses = [
     "border-teal",
     "border-indigo",
     "border-purple",
     "border-pink",
     "border-orange",
-    "border-teal",
   ];
+
   return (
     <section className="cards-row">
-      {metrics.map((metric, index) => {
-        const borderClass = borderClasses[index % borderClasses.length];
+      {metrics.map((m, i) => {
+        const border = borderClasses[i % borderClasses.length];
+        const flash = flashes[m.label] || "";
+
+        const valueText = m.isPercent
+          ? `${m.value.toFixed(2)} %`
+          : `${m.value.toFixed(2)} €`;
+
         return (
           <article
-            key={index}
-            className={`portfolio-card ${borderClass}`}
-            title={metric.label}
+            key={m.label}
+            className={`portfolio-card ${border} ${flash}`}
           >
-            <div className="card-label">{metric.label}</div>
-            <div className="card-value">{renderValue(metric)}</div>
+            <div className="card-label">{m.label}</div>
+            <div className="card-value">
+              {m.value >= 0 ? "▲ " : "▼ "}
+              {valueText}
+            </div>
           </article>
         );
       })}
