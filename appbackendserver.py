@@ -21,19 +21,24 @@ DBNAME = os.getenv("DBNAME")
 client = AsyncIOMotorClient(MONGOURL)
 db = client[DBNAME]
 
+
+
+# CONFIGURACIÓN CORS PARA PRODUCCIÓN + FRONTEND LOCAL
 app = FastAPI()
 
-# CONFIGURACIÓN CORS PARA PRODUCCIÓN (solo tu dominio Vercel)
+# CORS: permitir Vercel + localhost para desarrollo
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://portfolio-q1f4.vercel.app"],
+    allow_origins=[
+        "https://portfolio-q1f4.vercel.app",  # tu frontend en producción
+        "http://localhost:3000",              # frontend local
+        "http://127.0.0.1:3000",              # por si el navegador usa 127.0.0.1
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# El resto de tu código permanece igual…
-# -------------------------------------
 
 class Asset(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
@@ -63,8 +68,10 @@ def get_current_price_and_open(ticker: str, tipo: str, moneda: str):
     try:
         if not ticker:
             return None, None
+        # Si es cripto y no acaba en -USD, lo añadimos
         if tipo.lower() == "cripto" and not ticker.endswith("-USD"):
             ticker = f"{ticker}-USD"
+
         stock = yf.Ticker(ticker)
         hist = stock.history(period="1d")
         price_now = None
@@ -84,6 +91,7 @@ def get_current_price_and_open(ticker: str, tipo: str, moneda: str):
             or ticker.upper() in AMERICAN_EXTRAS
         )
 
+        # Si es americano y el mercado está cerrado -> apertura = 0
         if is_americano and not (apertura <= now < cierre):
             price_open = 0
         else:
@@ -228,7 +236,11 @@ async def portfolio_history(periodo: str = "mes"):
         for asset in assets:
             try:
                 yf_ticker = yf.Ticker(asset["ticker"])
-                df = yf_ticker.history(start=fecha.strftime("%Y-%m-%d"), end=(fecha+timedelta(days=1)).strftime("%Y-%m-%d"), interval="1d")
+                df = yf_ticker.history(
+                    start=fecha.strftime("%Y-%m-%d"),
+                    end=(fecha+timedelta(days=1)).strftime("%Y-%m-%d"),
+                    interval="1d"
+                )
                 if not df.empty:
                     precio_cierre = float(df.iloc[0]["Close"])
                 else:
