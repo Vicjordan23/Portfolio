@@ -1,68 +1,49 @@
 import React from "react";
 
-export default function Resumen({
-  valorTotal,
-  inversionRealizada,
-  gananciaPerdida,
-  rendimiento,
-  activosNum,
-  beneficioDiario,
-}) {
+/**
+ * Componente que muestra un resumen de métricas clave de la cartera.
+ * Cada métrica incluye una etiqueta, el valor numérico y un
+ * indicador visual (flecha hacia arriba o hacia abajo) que señala si
+ * el valor es positivo o negativo.
+ */
+export default function Resumen({ metrics = [] }) {
+  const renderValue = (metric) => {
+    const val = parseFloat(metric.value) || 0;
+    const isPositive = val >= 0;
+    const arrow = isPositive ? "▲" : "▼";
+    const absVal = Math.abs(val);
+    const text = metric.isPercent
+      ? `${absVal.toFixed(2)} %`
+      : `${absVal.toFixed(2)} €`;
+    return (
+      <span className={isPositive ? "green" : "red"}>
+        {arrow} {text}
+      </span>
+    );
+  };
+  const borderClasses = [
+    "border-teal",
+    "border-indigo",
+    "border-purple",
+    "border-pink",
+    "border-orange",
+    "border-teal",
+  ];
   return (
     <section className="cards-row">
-      <article className="portfolio-card border-teal">
-        <div className="card-label">Beneficio/Pérdida Diaria</div>
-        <div
-          className={`card-value ${
-            beneficioDiario >= 0 ? "green" : "red"
-          }`}
-        >
-          {beneficioDiario >= 0 ? "+" : ""}
-          {beneficioDiario.toFixed(2)} €
-        </div>
-      </article>
-
-      <article className="portfolio-card border-indigo">
-        <div className="card-label">Valor Total</div>
-        <div className="card-value indigo">
-          {parseInt(valorTotal || 0)} €
-        </div>
-      </article>
-
-      <article className="portfolio-card border-purple">
-        <div className="card-label">Inversión realizada</div>
-        <div className="card-value purple">
-          {parseInt(inversionRealizada || 0)} €
-        </div>
-      </article>
-
-      <article className="portfolio-card border-pink">
-        <div className="card-label">Ganancia / Pérdida</div>
-        <div
-          className={`card-value ${
-            (gananciaPerdida || 0) >= 0 ? "green" : "red"
-          }`}
-        >
-          {gananciaPerdida >= 0 ? "+" : ""}
-          {parseInt(gananciaPerdida || 0)} €
-        </div>
-      </article>
-
-      <article className="portfolio-card border-orange">
-        <div className="card-label">Rendimiento</div>
-        <div
-          className={`card-value ${
-            (rendimiento || 0) >= 0 ? "green" : "red"
-          }`}
-        >
-          {Number(rendimiento || 0).toFixed(2)} %
-        </div>
-      </article>
-
-      <article className="portfolio-card border-teal">
-        <div className="card-label">Número de activos</div>
-        <div className="card-value teal">{activosNum || 0}</div>
-      </article>
+      {metrics.map((metric, index) => {
+        const borderClass = borderClasses[index % borderClasses.length];
+        return (
+          <article
+            key={index}
+            className={`portfolio-card ${borderClass}`}
+            title={metric.label}
+          >
+            <div className="card-label">{metric.label}</div>
+            <div className="card-value">{renderValue(metric)}</div>
+          </article>
+        );
+      })}
     </section>
   );
 }
