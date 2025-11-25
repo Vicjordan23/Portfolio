@@ -1,7 +1,12 @@
 import React from "react";
 
 const TarjetasResumen = ({ resumen }) => {
-  const { valorTotal, inversionRealizada, gananciaPerdida, rendimiento, activos } = resumen;
+  // Asegúrate de que los valores sean números válidos antes de usar toFixed()
+  const valorTotal = resumen.valorTotal ?? 0;
+  const inversionRealizada = resumen.inversionRealizada ?? 0;
+  const gananciaPerdida = resumen.gananciaPerdida ?? 0;
+  const rendimiento = resumen.rendimiento ?? 0;
+  const activos = resumen.activos ?? 0;
 
   return (
     <div className="card-container">
