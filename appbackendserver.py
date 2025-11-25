@@ -21,24 +21,22 @@ DBNAME = os.getenv("DBNAME")
 client = AsyncIOMotorClient(MONGOURL)
 db = client[DBNAME]
 
-
-
-# CONFIGURACIÓN CORS PARA PRODUCCIÓN + FRONTEND LOCAL
 app = FastAPI()
 
-# CORS: permitir Vercel + localhost para desarrollo
+# Permitir tanto el dominio de producción como el entorno local
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://portfolio-q1f4.vercel.app",  # tu frontend en producción
-        "http://localhost:3000",              # frontend local
-        "http://127.0.0.1:3000",              # por si el navegador usa 127.0.0.1
+        "https://portfolio-q1f4.vercel.app",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 class Asset(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
@@ -64,13 +62,23 @@ class AssetCreate(BaseModel):
 
 AMERICAN_EXTRAS = {"TARA"}
 
+# In-memory cache for current price and opening price.
+PRICE_CACHE = {}
+CACHE_TTL = 120
+
 def get_current_price_and_open(ticker: str, tipo: str, moneda: str):
     try:
         if not ticker:
             return None, None
-        # Si es cripto y no acaba en -USD, lo añadimos
         if tipo.lower() == "cripto" and not ticker.endswith("-USD"):
             ticker = f"{ticker}-USD"
+
+        now_ts = datetime.now().timestamp()
+        cache_entry = PRICE_CACHE.get(ticker)
+        if cache_entry:
+            price_now_cached, price_open_cached, expires_at = cache_entry
+            if expires_at > now_ts:
+                return price_now_cached, price_open_cached
 
         stock = yf.Ticker(ticker)
         hist = stock.history(period="1d")
@@ -79,19 +87,12 @@ def get_current_price_and_open(ticker: str, tipo: str, moneda: str):
 
         madrid_tz = pytz.timezone('Europe/Madrid')
         now = datetime.now(madrid_tz)
-
         apertura = now.replace(hour=15, minute=31, second=0, microsecond=0)
         cierre = now.replace(hour=23, minute=30, second=0, microsecond=0)
         if now < apertura:
             cierre = cierre - timedelta(days=1)
             apertura = apertura - timedelta(days=1)
-
-        is_americano = (
-            moneda == 'USD'
-            or ticker.upper() in AMERICAN_EXTRAS
-        )
-
-        # Si es americano y el mercado está cerrado -> apertura = 0
+        is_americano = (moneda == 'USD' or ticker.upper() in AMERICAN_EXTRAS)
         if is_americano and not (apertura <= now < cierre):
             price_open = 0
         else:
@@ -104,7 +105,6 @@ def get_current_price_and_open(ticker: str, tipo: str, moneda: str):
                     float(info.get('previousClose', 0)) or
                     None
                 )
-
         if not hist.empty:
             price_now = float(hist['Close'].iloc[-1])
         else:
@@ -114,7 +114,7 @@ def get_current_price_and_open(ticker: str, tipo: str, moneda: str):
                 float(info.get('regularMarketPrice', 0)) or
                 None
             )
-
+        PRICE_CACHE[ticker] = (price_now, price_open, now_ts + CACHE_TTL)
         return price_now, price_open
     except Exception:
         return None, None
@@ -153,7 +153,6 @@ async def portfolio_summary():
     portfolio_data = []
     total_inversion = 0.0
     total_actual = 0.0
-
     for asset in assets:
         precio_actual, precio_apertura = get_current_price_and_open(
             asset['ticker'], asset['tipo'], asset['moneda_compra']
@@ -189,11 +188,9 @@ async def portfolio_summary():
             "fecha_compra": asset['fecha_compra'],
             "isin": asset.get('isin', "")
         })
-
     beneficio_diario_total = sum(a["beneficio_diario"] for a in portfolio_data)
     ganancia_perdida_total = total_actual - total_inversion
     rendimiento_porcentaje = (ganancia_perdida_total / total_inversion * 100) if total_inversion else 0
-
     return {
         "assets": portfolio_data,
         "resumen": {
@@ -221,26 +218,20 @@ async def portfolio_history(periodo: str = "mes"):
         dias = 365
         start = hoy - timedelta(days=dias)
         fechas = pd.bdate_range(start=start.date(), end=hoy.date(), freq="B").to_pydatetime().tolist()
-    else:  # mes por defecto
+    else:
         dias = 30
         start = hoy - timedelta(days=dias)
         fechas = pd.bdate_range(start=start.date(), end=hoy.date(), freq="B").to_pydatetime().tolist()
-
     assets = await db.assets.find({}, {"_id": 0}).to_list(1000)
     if not assets:
         return []
-
     history = []
     for fecha in fechas:
         valor_total_historico = 0
         for asset in assets:
             try:
                 yf_ticker = yf.Ticker(asset["ticker"])
-                df = yf_ticker.history(
-                    start=fecha.strftime("%Y-%m-%d"),
-                    end=(fecha+timedelta(days=1)).strftime("%Y-%m-%d"),
-                    interval="1d"
-                )
+                df = yf_ticker.history(start=fecha.strftime("%Y-%m-%d"), end=(fecha+timedelta(days=1)).strftime("%Y-%m-%d"), interval="1d")
                 if not df.empty:
                     precio_cierre = float(df.iloc[0]["Close"])
                 else:
@@ -268,4 +259,17 @@ async def export_excel():
         output,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=cartera.xlsx"}
+    )
+
+@app.get("/api/export/csv")
+async def export_csv():
+    assets = await db.assets.find({}, {"_id": 0}).to_list(1000)
+    df = pd.DataFrame(assets)
+    output = BytesIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
+    return StreamingResponse(
+        output,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=cartera.csv"}
     )

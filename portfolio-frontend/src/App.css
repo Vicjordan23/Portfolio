@@ -1,245 +1,225 @@
-/* ---------- RESET BÁSICO ---------- */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
-}
-
-/* ---------- TEMA CLARO / OSCURO (body.dark-theme lo controla React) ---------- */
-body {
-  background: #f5f7fa;
-  color: #111827;
-}
-
-body.dark-theme {
-  background: #020617;
+/* ---------- MODO OSCURO: Cargar por defecto ---------- */
+body.dark {
+  background-color: #2d3748;
   color: #e5e7eb;
 }
 
-/* ---------- LAYOUT GENERAL ---------- */
-.portfolio-bg {
-  min-height: 100vh;
-  padding: 24px 12px 40px;
-  display: flex;
-  justify-content: center;
-  background: radial-gradient(circle at top, #e5f0ff 0, #f5f7fa 55%, #e5e7eb 100%);
+body.dark .portfolio-bg {
+  background-color: #2d3748;
 }
 
-body.dark-theme .portfolio-bg {
-  background: radial-gradient(circle at top, #1f2937 0, #020617 60%);
+body.dark .portfolio-header {
+  background-color: #1a202c;
 }
 
-.portfolio-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+body.dark .portfolio-card {
+  background-color: #374151;
+  border: 1px solid #4a5568;
 }
 
-/* ---------- CABECERA ---------- */
-.portfolio-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 1.25rem;
+body.dark .portfolio-card:hover {
+  background-color: #2d3748;
 }
 
-.header-text {
-  max-width: 640px;
+body.dark .assets-table {
+  background-color: #1a202c;
 }
 
-.portfolio-title {
-  font-size: 1.9rem;
-  font-weight: 700;
-  margin: 0 0 4px;
+body.dark .assets-table thead th {
+  color: #a0aec0;
+  background-color: #2d3748;
 }
 
-.portfolio-desc {
-  margin: 0;
-  font-size: 0.94rem;
-  color: #6b7280;
+body.dark .assets-table tbody tr:nth-child(even) {
+  background-color: #2d3748;
 }
 
-body.dark-theme .portfolio-desc {
-  color: #9ca3af;
+body.dark .assets-table tbody tr:hover {
+  background-color: rgba(148, 163, 184, 0.1);
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+/* ---------- ESTILOS DE GANANCIAS/PÉRDIDAS EN VERDE Y ROJO ---------- */
+.ganancia {
+  color: #4caf50; /* Verde para ganancia */
 }
 
-/* Botón tema */
-.theme-toggle-btn,
-.compact-toggle-btn {
-  padding: 0.45rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  background: rgba(255, 255, 255, 0.9);
-  color: #111827;
-  cursor: pointer;
-  font-size: 0.85rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  backdrop-filter: blur(10px);
-  transition: background 0.2s ease, transform 0.1s ease,
-    box-shadow 0.2s ease;
+.perdida {
+  color: #f44336; /* Rojo para pérdida */
 }
 
-body.dark-theme .theme-toggle-btn {
-  background: rgba(15, 23, 42, 0.9);
-  color: #e5e7eb;
+.ganancia, .perdida {
+  font-weight: bold;
 }
 
-.theme-toggle-btn:hover,
-.compact-toggle-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3);
-}
-
-.header-right button {
-  font-size: 0.9rem;
-}
-
-/* ---------- ESTILOS DE TARJETAS CON BORDES DE COLORES Y ANIMACIÓN ---------- */
+/* ---------- TARJETAS: BORDE Y TAMAÑO ---------- */
 .portfolio-card {
-  background: #1f2937;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  background-color: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.portfolio-card.ganancia {
+  border-color: #4caf50; /* Borde verde si hay ganancia */
+}
+
+.portfolio-card.perdida {
+  border-color: #f44336; /* Borde rojo si hay pérdida */
 }
 
 .portfolio-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  background-color: #f7fafc;
 }
 
-/* Bordes de color */
-.border-teal { border-left: 4px solid #14b8a6; }
-.border-indigo { border-left: 4px solid #6366f1; }
-.border-purple { border-left: 4px solid #8b5cf6; }
-.border-pink { border-left: 4px solid #ec4899; }
-.border-orange { border-left: 4px solid #f97316; }
-
-/* Flechas para cambio de valores */
-.green { color: #22c55e; }
-.red { color: #ef4444; }
-
-/* ---------- RANKING DE ACTIVOS EN HORIZONTAL ---------- */
-.ranking-section {
-  margin-top: 24px;
-}
-
-.ranking-title {
-  font-size: 1.2rem;
-  font-weight: bold;
+/* ---------- ESTILOS DE LA TABLA ---------- */
+.assets-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1f2937;
   color: #e5e7eb;
-  margin-bottom: 12px;
 }
 
-.ranking-row {
+.assets-table thead th {
+  text-align: left;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #9ca3af;
+  border-bottom: 2px solid #374151;
+}
+
+.assets-table tbody td {
+  padding: 10px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #444;
+}
+
+.assets-table tbody tr:nth-child(even) {
+  background: #374151;
+}
+
+.assets-table tbody tr:hover {
+  background: rgba(148, 163, 184, 0.1);
+}
+
+.assets-table td,
+.assets-table th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Filtros y Botones de Acción ---------- */
+.filters-bar {
   display: flex;
-  gap: 16px;
-  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
-.ranking-card {
-  background: #374151;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+.filters-bar input,
+.filters-bar select {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
   width: 200px;
+}
+
+.filters-bar button {
+  padding: 0.75rem 1.25rem;
+  background-color: #3498db;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filters-bar button:hover {
+  background-color: #2980b9;
+}
+
+/* ---------- Botones de vista y opciones ---------- */
+.view-toggle button {
+  padding: 0.5rem 1rem;
+  background-color: #ddd;
+  border: none;
+  cursor: pointer;
+}
+
+.view-toggle button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.view-toggle button:hover {
+  background-color: #45a049;
+}
+
+/* ---------- Botones principales ---------- */
+.btn-main {
+  padding: 0.75rem 1.25rem;
+  background-color: #3498db;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-main:hover {
+  background-color: #2980b9;
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.25rem;
+  background-color: #f39c12;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e67e22;
+}
+
+/* ---------- Diseño para el "Top 3 activos" ---------- */
+.top-3-row {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.top-3-item {
+  padding: 1rem;
+  border-radius: 10px;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: #f7fafc;
+  flex: 1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
-.ranking-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+.top-3-item:first-child {
+  background-color: #ffdd00;
 }
 
-.ranking-medal {
-  font-size: 2rem;
+.top-3-item:nth-child(2) {
+  background-color: #00ff00;
 }
 
-.ranking-info {
-  margin-top: 8px;
+.top-3-item:nth-child(3) {
+  background-color: #ff4d00;
 }
 
-.ranking-ticker {
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.ranking-values {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.green {
-  color: #22c55e;
-}
-
-.red {
-  color: #ef4444;
-}
-
-/* ---------- ADAPTABILIDAD EN MÓVIL Y TABLET ---------- */
-@media (max-width: 1024px) {
-  .portfolio-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .portfolio-charts {
-    grid-template-columns: 1fr;
-  }
-
-  .cards-row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .filters-bar {
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 768px) {
-  .filters-bar {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .ranking-row {
-    flex-direction: column;
-  }
-
-  .portfolio-title {
-    font-size: 1.5rem;
-  }
-
-  .cards-row {
-    grid-template-columns: 1fr;
-  }
-
-  .chart-block {
-    width: 100%;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+.top-3-item:hover {
+  background-color: #ececec;
 }

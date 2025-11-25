@@ -13,29 +13,50 @@ const API =
   (process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000") + "/api";
 
 export default function App() {
+  // Estado para el modo oscuro
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Función para activar o desactivar el modo oscuro
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // Aplicar modo oscuro o claro al cargar y cambiar el estado
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [darkMode]); // Cada vez que darkMode cambie, aplica la clase correspondiente
+
+  // Activar modo oscuro por defecto al cargar la página
+  useEffect(() => {
+    setDarkMode(true); // Activar modo oscuro por defecto
+  }, []);
+
   const [assets, setAssets] = useState([]);
   const [resumen, setResumen] = useState(null);
   const [historial, setHistorial] = useState([]);
   const [periodo, setPeriodo] = useState("mes");
-  const [dark, setDark] = useState(false);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [editando, setEditando] = useState(null);
 
-  // modos de vista
+  // Modos de vista
   const [compactMode, setCompactMode] = useState(false);
   const [viewMode, setViewMode] = useState("tabla"); // "tabla" | "tarjetas"
 
-  // filtros
+  // Filtros
   const [filterType, setFilterType] = useState("todos");
   const [searchTerm, setSearchTerm] = useState("");
   const [gainFilter, setGainFilter] = useState("todos"); // "todos" | "ganando" | "perdiendo"
   const [minChange, setMinChange] = useState("");
   const [maxChange, setMaxChange] = useState("");
 
-  // orden tabla
+  // Orden tabla
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
 
-  // columnas opcionales
+  // Columnas opcionales
   const [visibleCols] = useState({
     beneficioDiario: true,
     precioApertura: true,
@@ -43,7 +64,7 @@ export default function App() {
     isin: false,
   });
 
-  // formulario
+  // Formulario
   const [form, setForm] = useState({
     nombre: "",
     ticker: "",
@@ -90,8 +111,8 @@ export default function App() {
   }, [cargarDatos, cargarHistorial]);
 
   useEffect(() => {
-    document.body.classList.toggle("dark-theme", dark);
-  }, [dark]);
+    document.body.classList.toggle("dark-theme", darkMode);
+  }, [darkMode]);
 
   // Filtros + ordenación
   const filteredAssets = useMemo(() => {
@@ -208,16 +229,6 @@ export default function App() {
   const guardarActivo = async (e) => {
     e.preventDefault();
 
-    // Validación sencilla extra
-    if (!form.nombre.trim() || !form.ticker.trim()) {
-      alert("Nombre y ticker son obligatorios.");
-      return;
-    }
-    if (Number(form.cantidad) <= 0 || Number(form.precio_compra) <= 0) {
-      alert("Cantidad y precio de compra deben ser mayores que cero.");
-      return;
-    }
-
     const payload = {
       nombre: form.nombre.trim(),
       ticker: form.ticker.trim(),
@@ -280,7 +291,8 @@ export default function App() {
     }
   };
 
-  const copiarTablaPortapapeles = () => {
+  // Función para copiar la tabla al portapapeles
+  const copiarTablaPortapapeles = (assets) => {
     if (!assets.length) return;
     const headers = [
       "Nombre",
@@ -334,16 +346,15 @@ export default function App() {
                 {compactMode ? "🔎 Modo normal" : "🧱 Modo compacto"}
               </button>
               <button
-                onClick={() => setDark((d) => !d)}
+                onClick={toggleDarkMode}
                 className="theme-toggle-btn"
                 title="Cambiar tema"
               >
-                {dark ? "🌙 Oscuro" : "☀️ Claro"}
+                {darkMode ? "🌙 Oscuro" : "☀️ Claro"}
               </button>
             </div>
           </header>
 
-          {/* Resumen + ranking + detalle de activos */}
           <Resumen metrics={resumenMetrics} />
 
           <RankingActivos activos={assets} />
@@ -365,7 +376,6 @@ export default function App() {
             />
           )}
 
-          {/* Barra de filtros / acciones */}
           <section className="filters-bar actions-row">
             <input
               type="text"
@@ -433,7 +443,7 @@ export default function App() {
             <button
               className="btn-secondary"
               type="button"
-              onClick={copiarTablaPortapapeles}
+              onClick={() => copiarTablaPortapapeles(assets)}
             >
               Copiar tabla
             </button>
@@ -452,13 +462,11 @@ export default function App() {
             </div>
           </section>
 
-          {/* Gráficos */}
           <section className="portfolio-charts">
             <GraficoEvolucion historial={historial} periodo={periodo} />
             <GraficoDistribucion activos={assets} />
           </section>
 
-          {/* Formulario de activo */}
           <div className="portfolio-actions actions-row" style={{ marginTop: 0 }}>
             <button
               className="btn-main"
