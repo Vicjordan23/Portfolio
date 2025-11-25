@@ -1,4 +1,168 @@
-/* ---------- MODO OSCURO: Cargar por defecto ---------- */
+/* ---------- Estilos generales de la tabla ---------- */
+.assets-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+.assets-table thead th {
+  text-align: left;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #9ca3af;
+  border-bottom: 2px solid #374151;
+}
+
+.assets-table tbody td {
+  padding: 10px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #444;
+}
+
+.assets-table tbody tr:nth-child(even) {
+  background: #374151;
+}
+
+.assets-table tbody tr:hover {
+  background: rgba(148, 163, 184, 0.1);
+}
+
+.assets-table td,
+.assets-table th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Estilos para mostrar los valores de ganancia y pérdida ---------- */
+.ganancia {
+  color: #4caf50; /* Verde para ganancia */
+}
+
+.perdida {
+  color: #f44336; /* Rojo para pérdida */
+}
+
+.ganancia, .perdida {
+  font-weight: bold;
+}
+
+/* ---------- Estilos para las tarjetas de activos (si se usa la vista de tarjetas) ---------- */
+.portfolio-card {
+  background-color: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.portfolio-card.ganancia {
+  border-color: #4caf50; /* Borde verde si hay ganancia */
+}
+
+.portfolio-card.perdida {
+  border-color: #f44336; /* Borde rojo si hay pérdida */
+}
+
+.portfolio-card:hover {
+  background-color: #f7fafc;
+}
+
+/* ---------- Estilos del encabezado y filtros ---------- */
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.portfolio-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filters-bar input,
+.filters-bar select {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
+
+.filters-bar button {
+  padding: 0.75rem 1.25rem;
+  background-color: #3498db;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filters-bar button:hover {
+  background-color: #2980b9;
+}
+
+/* ---------- Botones de cambio de vista y acciones ---------- */
+.view-toggle button {
+  padding: 0.5rem 1rem;
+  background-color: #ddd;
+  border: none;
+  cursor: pointer;
+}
+
+.view-toggle button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.view-toggle button:hover {
+  background-color: #45a049;
+}
+
+/* ---------- Estilo de los botones principales ---------- */
+.btn-main {
+  padding: 0.75rem 1.25rem;
+  background-color: #3498db;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-main:hover {
+  background-color: #2980b9;
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.25rem;
+  background-color: #f39c12;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e67e22;
+}
+
+/* ---------- Modo oscuro ---------- */
 body.dark {
   background-color: #2d3748;
   color: #e5e7eb;
@@ -38,159 +202,7 @@ body.dark .assets-table tbody tr:hover {
   background-color: rgba(148, 163, 184, 0.1);
 }
 
-/* ---------- ESTILOS DE GANANCIAS/PÉRDIDAS EN VERDE Y ROJO ---------- */
-.ganancia {
-  color: #4caf50; /* Verde para ganancia */
-}
-
-.perdida {
-  color: #f44336; /* Rojo para pérdida */
-}
-
-.ganancia, .perdida {
-  font-weight: bold;
-}
-
-/* ---------- TARJETAS: BORDE Y TAMAÑO ---------- */
-.portfolio-card {
-  background-color: #ffffff;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  padding: 1.25rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.portfolio-card.ganancia {
-  border-color: #4caf50; /* Borde verde si hay ganancia */
-}
-
-.portfolio-card.perdida {
-  border-color: #f44336; /* Borde rojo si hay pérdida */
-}
-
-.portfolio-card:hover {
-  background-color: #f7fafc;
-}
-
-/* ---------- ESTILOS DE LA TABLA ---------- */
-.assets-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #1f2937;
-  color: #e5e7eb;
-}
-
-.assets-table thead th {
-  text-align: left;
-  padding: 12px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #9ca3af;
-  border-bottom: 2px solid #374151;
-}
-
-.assets-table tbody td {
-  padding: 10px;
-  font-size: 0.85rem;
-  border-bottom: 1px solid #444;
-}
-
-.assets-table tbody tr:nth-child(even) {
-  background: #374151;
-}
-
-.assets-table tbody tr:hover {
-  background: rgba(148, 163, 184, 0.1);
-}
-
-.assets-table td,
-.assets-table th {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ---------- Filtros y Botones de Acción ---------- */
-.filters-bar {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.filters-bar input,
-.filters-bar select {
-  padding: 0.75rem;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  width: 200px;
-}
-
-.filters-bar button {
-  padding: 0.75rem 1.25rem;
-  background-color: #3498db;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.filters-bar button:hover {
-  background-color: #2980b9;
-}
-
-/* ---------- Botones de vista y opciones ---------- */
-.view-toggle button {
-  padding: 0.5rem 1rem;
-  background-color: #ddd;
-  border: none;
-  cursor: pointer;
-}
-
-.view-toggle button.active {
-  background-color: #4caf50;
-  color: white;
-}
-
-.view-toggle button:hover {
-  background-color: #45a049;
-}
-
-/* ---------- Botones principales ---------- */
-.btn-main {
-  padding: 0.75rem 1.25rem;
-  background-color: #3498db;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-main:hover {
-  background-color: #2980b9;
-}
-
-.btn-secondary {
-  padding: 0.75rem 1.25rem;
-  background-color: #f39c12;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-secondary:hover {
-  background-color: #e67e22;
-}
-
-/* ---------- Diseño para el "Top 3 activos" ---------- */
+/* ---------- Top 3 activos ---------- */
 .top-3-row {
   display: flex;
   gap: 2rem;
@@ -222,4 +234,80 @@ body.dark .assets-table tbody tr:hover {
 
 .top-3-item:hover {
   background-color: #ececec;
+}
+/* ---------- Estilo para las tarjetas del portafolio ---------- */
+.card-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 0;
+}
+
+.card {
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 19%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card .title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.card .value {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.card:nth-child(1) {
+  background: linear-gradient(135deg, #6a11cb, #2575fc); /* Valor total */
+}
+
+.card:nth-child(2) {
+  background: linear-gradient(135deg, #9c27b0, #8e44ad); /* Inversión Realizada */
+}
+
+.card:nth-child(3) {
+  background: linear-gradient(135deg, #e74c3c, #f39c12); /* Ganancia/Pérdida */
+}
+
+.card:nth-child(4) {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Rendimiento */
+}
+
+.card:nth-child(5) {
+  background: linear-gradient(135deg, #00c6ff, #0072ff); /* Activos */
+}
+
+/* ---------- Estilo para números positivos y negativos ---------- */
+.card .value-positive {
+  color: #2ecc71; /* Verde */
+}
+
+.card .value-negative {
+  color: #e74c3c; /* Rojo */
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 80%;
+    margin-bottom: 1.5rem;
+  }
 }
