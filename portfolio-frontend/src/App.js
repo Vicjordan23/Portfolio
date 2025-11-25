@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import TarjetasResumen from "./TarjetasResumen"; // Componente de tarjetas
-import TablaActivos from "./TablaActivos"; // Componente de tabla
+import TarjetasResumen from "./TarjetasResumen"; // Componente de tarjetas de resumen
+import TablaActivos from "./TablaActivos"; // Componente de tabla de activos
+import GraficoEvolucion from "./GraficoEvolucion"; // Gráfico de evolución de portafolio
+import GraficoDistribucion from "./GraficoDistribucion"; // Nuevo gráfico de distribución
+import RankingActivos from "./RankingActivos"; // Componente de ranking
 import "./App.css";
 
 const API =
@@ -19,9 +22,6 @@ export default function App() {
   const [assets, setAssets] = useState([]);
   const [resumen, setResumen] = useState(null);
 
-  // Modo oscuro
-  const [darkMode, setDarkMode] = useState(true); // Por defecto, activar el modo oscuro
-
   // Carga de datos con cache local (offline básico)
   const cargarDatos = useCallback(async () => {
     try {
@@ -37,23 +37,60 @@ export default function App() {
     cargarDatos();
   }, [cargarDatos]);
 
-  useEffect(() => {
-    document.body.classList.toggle("dark-theme", darkMode);
-  }, [darkMode]);
+  // El modo oscuro se gestiona a través de CSS, pero para este diseño se utiliza un tema claro por defecto.
+
+  // Funciones auxiliares para los botones de acción. Actualmente muestran un mensaje.
+  const handleAddActivo = () => {
+    alert("Funcionalidad de añadir activo no implementada en esta demo");
+  };
+
+  const handleExportExcel = () => {
+    alert("Funcionalidad de exportar a Excel no implementada en esta demo");
+  };
 
   return (
-    <div className={`portfolio-bg ${darkMode ? "dark" : ""}`}>
-      <div className="app-shell">
-        <div className="portfolio-container">
-          <h1>Mi cartera de inversión</h1>
+    <div className="portfolio-wrapper">
+      {/* Encabezado con gradiente y subtítulo */}
+      <header className="portfolio-header-custom">
+        <h1>Mi Portafolio de Inversión</h1>
+        <p>Gestiona y visualiza tus inversiones en tiempo real</p>
+      </header>
 
-          {/* Tarjetas de resumen */}
-          {resumen && <TarjetasResumen resumen={resumen} />}
+      {/* Tarjetas de resumen con bordes de colores */}
+      {resumen && <TarjetasResumen resumen={resumen} />}
 
-          {/* Tabla de activos */}
-          <TablaActivos activos={assets} calcularBeneficioDiario={calcularBeneficioDiario} />
-        </div>
+      {/* Botones de acción */}
+      <div className="button-row">
+        <button className="btn-primary" onClick={handleAddActivo}>
+          ➕ Añadir Activo
+        </button>
+        <button className="btn-secondary" onClick={cargarDatos}>
+          🔄 Actualizar
+        </button>
+        <button className="btn-success" onClick={handleExportExcel}>
+          📥 Exportar a Excel
+        </button>
       </div>
+
+      {/* Gráficos */}
+      <div className="chart-row">
+        {resumen && (
+          <GraficoEvolucion
+            historial={resumen.historial || []}
+            periodo="mes"
+          />
+        )}
+        <GraficoDistribucion activos={assets} />
+      </div>
+
+      {/* Ranking de activos */}
+      <RankingActivos activos={assets} />
+
+      {/* Tabla de activos */}
+      <TablaActivos
+        activos={assets}
+        calcularBeneficioDiario={calcularBeneficioDiario}
+      />
     </div>
   );
 }

@@ -1,47 +1,54 @@
 import React from "react";
 
 const TarjetasResumen = ({ resumen }) => {
-  // Asegúrate de que los valores sean números válidos antes de usar toFixed()
-  const valorTotal = resumen.valorTotal ?? 0;
-  const inversionRealizada = resumen.inversionRealizada ?? 0;
-  const gananciaPerdida = resumen.gananciaPerdida ?? 0;
-  const rendimiento = resumen.rendimiento ?? 0;
-  const activos = resumen.activos ?? 0;
+  // Extrae los valores de resumen asegurando que sean números válidos
+  const valorTotal = Number(resumen.valorTotal ?? 0);
+  const inversionRealizada = Number(resumen.inversionRealizada ?? 0);
+  const gananciaPerdida = Number(resumen.gananciaPerdida ?? 0);
+  const rendimiento = Number(resumen.rendimiento ?? 0);
+  const activos = Number(resumen.activos ?? 0);
+
+  // Definimos un arreglo de métricas con etiqueta, valor y si el valor es un porcentaje
+  const metrics = [
+    { label: "Valor Total", value: valorTotal, isPercent: false },
+    { label: "Inversión Realizada", value: inversionRealizada, isPercent: false },
+    { label: "Ganancia/Pérdida", value: gananciaPerdida, isPercent: false },
+    { label: "Rendimiento", value: rendimiento, isPercent: true },
+    { label: "Activos", value: activos, isPercent: false },
+  ];
+
+  // Clases para los bordes de cada tarjeta según su posición
+  const borderClasses = [
+    "border-blue",
+    "border-purple",
+    "border-pink",
+    "border-orange",
+    "border-teal",
+  ];
 
   return (
-    <div className="card-container">
-      <div className="card">
-        <div className="title">Valor Total</div>
-        <div className={`value ${valorTotal >= 0 ? "value-positive" : "value-negative"}`}>
-          {valorTotal.toFixed(2)} €
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="title">Inversión Realizada</div>
-        <div className={`value ${inversionRealizada >= 0 ? "value-positive" : "value-negative"}`}>
-          {inversionRealizada.toFixed(2)} €
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="title">Ganancia/Pérdida</div>
-        <div className={`value ${gananciaPerdida >= 0 ? "value-positive" : "value-negative"}`}>
-          {gananciaPerdida.toFixed(2)} €
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="title">Rendimiento</div>
-        <div className={`value ${rendimiento >= 0 ? "value-positive" : "value-negative"}`}>
-          {rendimiento.toFixed(2)} %
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="title">Activos</div>
-        <div className="value">{activos}</div>
-      </div>
+    <div className="summary-cards-container">
+      {metrics.map((m, i) => {
+        const borderClass = borderClasses[i % borderClasses.length];
+        // Formateamos el valor añadiendo símbolo de porcentaje si aplica
+        const formattedValue = m.isPercent
+          ? `${m.value.toFixed(2)} %`
+          : `${m.value.toFixed(2)} €`;
+        return (
+          <div key={m.label} className={`summary-card ${borderClass}`}>
+            <div className="summary-card-title">{m.label}</div>
+            <div className="summary-card-value">
+              {/* Indicador de subida o bajada */}
+              {m.label !== "Activos" && (
+                <span style={{ marginRight: 4 }}>
+                  {m.value >= 0 ? "▲" : "▼"}
+                </span>
+              )}
+              {formattedValue}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

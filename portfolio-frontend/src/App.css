@@ -311,3 +311,152 @@ body.dark .assets-table tbody tr:hover {
     margin-bottom: 1.5rem;
   }
 }
+
+/* ==============================================================
+   NUEVOS ESTILOS PARA EL DASHBOARD PROFESIONAL
+   Estas clases se utilizan para dar el aspecto profesional de la
+   interfaz de portafolio tal y como se muestra en el ejemplo.
+   Se evita modificar estilos previos reutilizados por otros
+   componentes, por lo que se emplean prefijos específicos.
+=============================================================== */
+
+/* Contenedor principal */
+.portfolio-wrapper {
+  background-color: #f7f8fa;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* Cabecera con gradiente */
+.portfolio-header-custom {
+  background: linear-gradient(90deg, #7b5dff, #da4dfd);
+  padding: 2rem 1rem;
+  color: #ffffff;
+  border-radius: 0 0 12px 12px;
+}
+
+.portfolio-header-custom h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.portfolio-header-custom p {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Tarjetas de resumen */
+.summary-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.summary-card {
+  flex: 1 1 160px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 3px solid transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-card-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #6c757d;
+}
+
+.summary-card-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* Colores de borde para cada tarjeta */
+.border-blue {
+  border-color: #7b5dff;
+}
+.border-purple {
+  border-color: #e04ad7;
+}
+.border-pink {
+  border-color: #ff7eb3;
+}
+.border-orange {
+  border-color: #ffa500;
+}
+.border-teal {
+  border-color: #2ecc71;
+}
+
+/* Botonera */
+.button-row {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.button-row button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.button-row .btn-primary {
+  background-color: #7b5dff;
+  color: #ffffff;
+}
+.button-row .btn-primary:hover {
+  background-color: #6846e8;
+}
+.button-row .btn-secondary {
+  background-color: #ffffff;
+  color: #7b5dff;
+  border: 1px solid #7b5dff;
+}
+.button-row .btn-secondary:hover {
+  background-color: #f3f0fe;
+}
+.button-row .btn-success {
+  background-color: #2ecc71;
+  color: #ffffff;
+}
+.button-row .btn-success:hover {
+  background-color: #27ae60;
+}
+
+/* Distribución de los bloques de gráficos */
+.chart-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chart-block {
+  flex: 1 1 300px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chart-label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
